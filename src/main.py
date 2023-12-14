@@ -12,6 +12,8 @@ def videoProcessing(videoPath, model):
     # Reading video file
     print("Opening video stream...\n")
     capture = cv2.VideoCapture(videoPath)
+    # Saved image flag -> save 1 image per run
+    imgFlag = False
     # Start reading video frames
     while True:
         flag, frame = capture.read()
@@ -25,14 +27,18 @@ def videoProcessing(videoPath, model):
         df = results.pandas().xyxy[0]
         # Iterate through bounding boxes
         for ind in df.index:
+            if ind % 2 == 1:
+                continue
             # Extracting bounding box coords from dataframe 
             x1, y1 = int(df['xmin'][ind]), int(df['ymin'][ind])
             x2, y2 = (int(df['xmax'][ind]),int(df['ymax'][ind]))
             cv2.rectangle(frame, (x1, y1), (x2, y2), color=(255,0,0), thickness=2)
-            cv2.putText(frame, df['confidence'][ind], (x1, y1-5), color=(255,0,0), thickness=2)
+            # cv2.putText(frame, str(df['confidence'][ind]), (x1, y1-5), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,0,0), 2, cv2.LINE_AA)
             # Display
             cv2.imshow("Image", downscale_img(frame, 0.7))
-            # cv2.imshow("Cropped", frame[x1:x2, y1:y2])
+            if not imgFlag : 
+                cv2.imwrite("E:/Internship/ML_simplePython/saved_images/savedCropped.jpg", frame[x1:x2, y1:y2])
+                imgFlag = True
         # Pressed esc to close player
         exitKey = cv2.waitKey(10)
         if exitKey == 27:
