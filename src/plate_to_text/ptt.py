@@ -19,7 +19,9 @@ def remove_noise(image):
  
 #thresholding
 def thresholding(image):
-    output = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    image = cv2.GaussianBlur(image, (5, 5), 0)
+    # output = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    output = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY_INV, 21, 10)
     if not save_image(output, "thresholded.jpg"):
         print("Unable to save thresholded image")
     return output
@@ -42,7 +44,7 @@ def erode(image):
 
 #opening - erosion followed by dilation
 def opening(image):
-    kernel = np.ones((5,5),np.uint8)
+    kernel = np.ones((7,7),np.uint8)
     return cv2.morphologyEx(image, cv2.MORPH_OPEN, kernel)
 
 #canny edge detection
@@ -74,24 +76,38 @@ def deskew(image):
 
 # Save image
 def save_image(image, filename):
-    return cv2.imwrite(filename, image)
+    # return cv2.imwrite(filename, image)
+    return True
+
+def resize_image(image):
+    scale_factor = 5 # Percent of og size
+    width = int(image.shape[1] * scale_factor)
+    height = int(image.shape[0] * scale_factor)
+    return cv2.resize(image, (width, height), interpolation=cv2.INTER_AREA)
 
 def pytesseract_setup(oem, psm, pytesseract_path):
     pytesseract.pytesseract.tesseract_cmd = pytesseract_path
     return '--oem 3 --psm 12'
 
 
-def ocr(image, oem, psm, pytesseract_path):
-    temp_image = image.copy()
+def ocr_(image, oem, psm, pytesseract_path):
+    image = resize_image(image)
+    # image = image
     # Preprocess
-    temp_image = get_grayscale(temp_image)
+    image = get_grayscale(image)
 
-    temp_image = thresholding(temp_image)
+    image = thresholding(image)
 
+    image = dilate(image)
+    image = erode(image)
+    image = opening(image)
     # OCR
     custom_config = r'--oem 3 --psm 12'
     pytesseract.pytesseract.tesseract_cmd = pytesseract_path
-    df = pytesseract.image_to_data(temp_image, config=custom_config, output_type=Output.DICT)
+    output = pytesseract.image_to_string(image, config=custom_config)
+    print(output.replace('\n', ''), '\n')
+    # print(df.keys())
+    return image
     
 
 
