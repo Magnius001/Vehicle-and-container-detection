@@ -5,6 +5,7 @@ import torch
 
 sys.path.append(r"src\plate_to_text")
 from plate_to_text.ptt import ocr_ 
+from plate_to_text.ptt_yolo import ocr_yolo_version 
 
 def setup_model(modelName, weightPath):
     model = torch.hub.load('ultralytics/{}'.format(modelName), 'custom', path = weightPath)
@@ -26,10 +27,13 @@ def _extract_result(results, frame) -> list:
         leftMin, topMin = int(df['xmin'][ind]), int(df['ymin'][ind])
         leftMax, topMax = int(df['xmax'][ind]),int(df['ymax'][ind])
         class_name = str(df['name'][ind])
-        # Crop image and append to output array, add extra conditions if needed
+        # Crop image and append to output array, add extra conditions if needed then put it through ocr
         if "plate" in class_name:
             cropped_image = frame[topMin:topMax, leftMin:leftMax]
-            processed_image = ocr_(cropped_image, 1, 1, r'D:/Programs/Tesseract-OCR/tesseract.exe')
+            # processed_image = ocr_(cropped_image, 1, 1, r'D:/Programs/Tesseract-OCR/tesseract.exe')
+            processed_image = ocr_yolo_version(cropped_image)
+            if processed_image is None:
+                continue
             new_tuple = (processed_image, class_name)
             output.append(new_tuple)
     return output

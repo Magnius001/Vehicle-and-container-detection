@@ -15,8 +15,10 @@ CURRENT_WORKING_DIRECTORY = pathlib.Path.cwd()
 
 def main():
     # Getting all images from folder
-    all_images_file_name = load_images_from(r"E:\Internship\Common_resources\TV6-1.v1i.yolov5pytorch\train\images")
-    model = setup_model("yolov5", "weights/best_plate.pt")
+    # all_images_file_name = load_images_from(r"E:\Internship\Common_resources\TV6-1.v1i.yolov5pytorch\train\images")
+    # all_images_file_name = load_images_from(r"E:\Internship\Common_resources\easyscale-front-top-cw.v12i.yolov5pytorch\test\images")
+    all_images_file_name = load_images_from(r"D:\Download\Sample collector\images")
+    model = setup_model("yolov5", r"weights\best_plate_5l.pt")
     i = 0
     # print(os.path.join(CURRENT_WORKING_DIRECTORY, "hello"))
     # Processing all image in folder
@@ -32,8 +34,8 @@ def main():
         save_classified_images(classified_images, path)
         # Counting
         i+=1
-        # Break after 400 loops
-        if (i > 50):
+        # Break after 10 loops
+        if (i > 100):
             break
     print("\n {} of {} images have detected objects".format(i, len(all_images_file_name)))
 
