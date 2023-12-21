@@ -9,18 +9,17 @@ import pandas
 # Mute false positive warnings
 pandas.options.mode.chained_assignment = None  # default='warn'
 
-sys.path.append(r"src\plate_to_text")
 from plate_to_text.ptt import ocr_ 
 
-def setup_model(modelName, weightPath):
-    model = torch.hub.load('ultralytics/{}'.format(modelName), 'custom', path = weightPath, _verbose=False)
-    # Custom config here
-    model.conf = 0.35
-    # ...
-    return model
+# def setup_model(modelName, weightPath):
+#     model = torch.hub.load('ultralytics/{}'.format(modelName), 'custom', path = weightPath, verbose=False)
+#     # Custom config here
+#     model.conf = 0.35
+#     # ...
+#     return model
 
 # Resize
-def resize_image(image, scale_factor):
+def _resize_image(image, scale_factor):
     width = int(image.shape[1] * scale_factor)
     height = int(image.shape[0] * scale_factor)
     return cv2.resize(image, (width, height), interpolation=cv2.INTER_AREA)
@@ -30,7 +29,7 @@ def _extract_result(results, frame):
     # Extract to dataframe
     df = results.pandas().xyxy[0]
     df = pandas.DataFrame(df)
-    mean_of_y = int((df.max()[1] + df.min()[1])/2)
+    mean_of_y = int((df.max()['ymin'] + df.min()['ymin'])/2)
     print(f'Mean of ymin: {mean_of_y}\n')
     # Added boundary boxes to frame
     for ind in df.index:
@@ -52,8 +51,8 @@ def _extract_result(results, frame):
     df = df.sort_values(['ymin', 'xmin'], ascending = [True, True])
     df = df.reset_index()
     print(df)
-    if verify_result(df):
-        print(result_to_string(df))
+    if _verify_result(df):
+        print(_result_to_string(df))
         return frame
     return frame
 
@@ -78,14 +77,14 @@ def _class_to_character(class_name) -> str:
     return chr(id + offset)
 
 # Check if the result is in the correct format of a license plate
-def verify_result(df) -> bool:
+def _verify_result(df) -> bool:
     df.reset_index()
     if (len(df) == 8 or len(df) == 9) and str(df['name'][2]).isalpha() and str(df['name'][0]).isdigit():
         return True
     else:
         return False
 
-def result_to_string(df: pandas.DataFrame) -> str:
+def _result_to_string(df: pandas.DataFrame) -> str:
     df.reset_index()
     output = ""
     for ind in df.index:
@@ -96,9 +95,9 @@ def ocr_yolo_version(image, model = None) -> numpy.ndarray:
     # Setup
     # Using default model if needed
     if model is None:
-        model = setup_model("yolov5", r"weights\best_plate_5l_10e.pt")
+        return None
     # Inference
     frame = image.copy()
-    frame = resize_image(frame, 5)
+    frame = _resize_image(frame, 5)
     results = model(frame)
     return _extract_result(results, frame)
