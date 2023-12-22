@@ -6,6 +6,9 @@ import torch
 import cv2
 import pandas
 
+pandas.options.mode.chained_assignment = None  # default='warn'
+
+
 # Resize
 def _resize_image(image, scale_factor) -> numpy.ndarray:
     width = int(image.shape[1] * scale_factor)
@@ -92,6 +95,9 @@ def _apply_ocr(cropped_image: numpy.ndarray, model) -> str:
     results = model(frame)
     # Extracting results
     df = results.pandas().xyxy[0]
+    # Empty
+    if len(df) < 1:
+        return None
     df = pandas.DataFrame(df)
     # Caculate mean of ymin values to determines rows
     mean_of_y = int((df.max()['ymin'] + df.min()['ymin'])/2)
@@ -177,6 +183,7 @@ def _apply_ocr(cropped_image: numpy.ndarray, model) -> str:
 def detect(image: numpy.ndarray, plate_region_model = None, plate_ocr_model = None) -> tuple:
     if plate_ocr_model is None or plate_region_model is None or image is None:
         return None
+    truck_detected_flag = False
     frame = image.copy()
     results = plate_region_model(frame)
     # Extracting
@@ -189,7 +196,8 @@ def detect(image: numpy.ndarray, plate_region_model = None, plate_ocr_model = No
         leftMax, topMax = int(df['xmax'][ind]),int(df['ymax'][ind])
         class_name = str(df['name'][ind])
         # Crop image and append to output array, add extra conditions if needed then put it through ocr
-        if "plate" in class_name:
+        if "plate" in class_name or "front" in class_name:
+            truck_detected_flag = True
             cropped_image = frame[topMin:topMax, leftMin:leftMax]
             plate_text = _apply_ocr(cropped_image, plate_ocr_model)
             if plate_text is None:
@@ -200,4 +208,6 @@ def detect(image: numpy.ndarray, plate_region_model = None, plate_ocr_model = No
             # Adding to list
             all_plate_texts.append(plate_text)
     # Returning the process images
+    if not truck_detected_flag:
+        return None
     return (image, all_plate_texts)
