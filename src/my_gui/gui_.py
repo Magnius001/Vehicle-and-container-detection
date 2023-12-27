@@ -142,6 +142,14 @@ class App(customtkinter.CTk):
             imtk = customtkinter.CTkImage(dark_image=im, size=(self.camera_width, self.camera_height-5))
             camera[1].configure(image = imtk)
             camera[1].image = imtk
+    def update_status(self, new_status: str, new_color: str):
+        self.status_display.configure(text=new_status, new_color=new_color)
+
+    def update_plate(self, new_plate: str):
+        self.plate_display.configure(text=new_plate)
+
+    def update_container_details(self, c1_code: str, c2_code: str, date: str, time: str):
+        self.con_details_display(text=f'Container 1: {c1_code}\nContainer 2: {c2_code}\nDate: {date}\nTime: {time}\n')
 
 
 new_app = App()
