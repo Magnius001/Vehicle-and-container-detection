@@ -32,30 +32,58 @@ class Controller():
         self.models[CONTAINER_2_CODE] = my_utils.setup_yolo_model("yolov5", r"weights\code_ocr.pt")
 
         # Creat event flag for when a truck is present in the lane
-        self.truck_detected = threading.Event
-        self.front_cam_buffer = queue.Queue[tuple]
-        self.back_cam_buffer = queue.Queue[tuple]
-        self.con1_cam_buffer = queue.Queue[tuple]
-        self.con2_cam_buffer = queue.Queue[tuple]
+        self.truck_detected = threading.Event()
+        self.front_cam_buffer = queue.Queue(maxsize=1)
+        self.back_cam_buffer = queue.Queue(maxsize=1)
+        self.con1_cam_buffer = queue.Queue(maxsize=1)
+        self.con2_cam_buffer = queue.Queue(maxsize=1)
 
         # Create threads to handle multiple camera streams
-        self.front_cam = stream_thread.Master_stream_thread(stream_names[0], stream_urls[0], self.models[PLATE_REGION], self.models[PLATE_OCR], self.truck_detected, self.cam_buffer)
+        self.front_cam = stream_thread.Master_stream_thread(stream_names[0], stream_urls[0], self.models[PLATE_REGION], self.models[PLATE_OCR], self.truck_detected, self.front_cam_buffer)
         self.back_cam = stream_thread.Support_stream_thread(stream_names[1], stream_urls[1], None, self.truck_detected, self.back_cam_buffer)
         self.con1_cam = stream_thread.Support_stream_thread(stream_names[2], stream_urls[2], self.models[CONTAINER_1_CODE], self.truck_detected, self.con1_cam_buffer)
         self.con2_cam = stream_thread.Support_stream_thread(stream_names[3], stream_urls[3], self.models[CONTAINER_2_CODE], self.truck_detected, self.con2_cam_buffer)
 
+        # Start capturing camera streams
+        self.front_cam.start()
+        self.back_cam.start()
+        self.con1_cam.start()
+        self.con2_cam.start()
+
         # Init GUI
         self.app = gui_.App()
-        self.app.after(1000, self.flush_buffer)
+        self.app.after(200, self.update_gui)
+        self.app.mainloop()
+        print("Stopping threads...\n")
+        self.front_cam.stop_stream()
+        self.back_cam.stop_stream()
+        self.con1_cam.stop_stream()
+        self.con2_cam.stop_stream()
 
-    def flush_buffer(self):
-        frames = []
-        if not self.front_cam_buffer.empty():
-            frames.append(self.front_cam_buffer.get())
+    def update_gui(self):
+        results = []
+        print("Flushing...\n")
+        if self.front_cam_buffer.qsize != 0:
+            results.append(self.front_cam_buffer.get())
         if not self.back_cam_buffer.empty():
-            frames.append(self.back_cam_buffer.get())
+            results.append(self.back_cam_buffer.get())
         if not self.con1_cam_buffer.empty():
-            frames.append(self.con1_cam_buffer.get())
+            results.append(self.con1_cam_buffer.get())
         if not self.con2_cam_buffer.empty():
-            frames.append(self.con2_cam_buffer.get())
+            results.append(self.con2_cam_buffer.get())
+        frames = []
+        for result in results:
+            frames.append(result[0]) 
         self.app.update_camera_display(frames)
+
+        if self.truck_detected.is_set():
+            self.app.update_status('TRUCK DETECTED', '#58e91d')
+        else:
+            self.app.update_status('EMPTY', 'white')
+
+        if results[0][1] is None:
+            self.app.update_plate("")
+        else:
+            self.app.update_plate(results[0][1])
+            
+        self.app.after(1000, self.update_gui)

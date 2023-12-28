@@ -69,7 +69,7 @@ def _apply_ocr(cropped_image: numpy.ndarray, model) -> str:
     df = pandas.DataFrame(df)
     # Caculate mean of ymin values to determines rows
     mean_of_y = int((df.max()['ymin'] + df.min()['ymin'])/2)
-    print(f'Mean of ymin: {mean_of_y}\n')
+    # print(f'Mean of ymin: {mean_of_y}\n')
     # Iterate through dataframe to get the alphanumerics
     for ind in df.index:
         # Extracting coords

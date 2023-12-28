@@ -4,7 +4,6 @@ import numpy
 import cv2
 import tkinter
 from PIL import Image, ImageTk
-from gradient_frame import GradientFrame
 
 # Get screen resolution
 import ctypes
@@ -144,7 +143,7 @@ class App(customtkinter.CTk):
             camera[1].configure(image = imtk)
             camera[1].image = imtk
     def update_status(self, new_status: str, new_color: str):
-        self.status_display.configure(text=new_status, new_color=new_color)
+        self.status_display.configure(text=new_status, bg_color=new_color)
 
     def update_plate(self, new_plate: str):
         self.plate_display.configure(text=new_plate)
@@ -153,15 +152,15 @@ class App(customtkinter.CTk):
         self.con_details_display(text=f'Container 1: {c1_code}\nContainer 2: {c2_code}\nDate: {date}\nTime: {time}\n')
 
 
-new_app = App()
+# new_app = App()
 
-images = []
-# for i in range(4):
-#     images.append(cv2.imread(r"E:\Internship\Common_resources\official_train_img\images\images\1.png"))
-images.append(cv2.imread(r"E:\Internship\Common_resources\Screenshots\cam_20070_c.png"))
-images.append(cv2.imread(r"E:\Internship\Common_resources\Screenshots\cam_20075_c.png"))
-images.append(cv2.imread(r"E:\Internship\Common_resources\Screenshots\cam_20078_c.png"))
-images.append(cv2.imread(r"E:\Internship\Common_resources\Screenshots\cam_20079_c.png"))
+# images = []
+# # for i in range(4):
+# #     images.append(cv2.imread(r"E:\Internship\Common_resources\official_train_img\images\images\1.png"))
+# images.append(cv2.imread(r"E:\Internship\Common_resources\Screenshots\cam_20070_c.png"))
+# images.append(cv2.imread(r"E:\Internship\Common_resources\Screenshots\cam_20075_c.png"))
+# images.append(cv2.imread(r"E:\Internship\Common_resources\Screenshots\cam_20078_c.png"))
+# images.append(cv2.imread(r"E:\Internship\Common_resources\Screenshots\cam_20079_c.png"))
 
-new_app.update_camera_display(images=images)
-new_app.mainloop()
+# new_app.update_camera_display(images=images)
+# new_app.mainloop()

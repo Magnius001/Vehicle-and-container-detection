@@ -1,4 +1,5 @@
 # Define class for the camera thread.
+import os
 import queue
 import threading
 import cv2
@@ -15,13 +16,14 @@ class Master_stream_thread(threading.Thread):
         self.plate_ocr_model = plate_ocr
         self.truck_detected = truck_detected
         self.buffer = buffer
+        self.stop_flag = False
 
     def run(self):
         print("Starting " + self.stream_name)
         self.launch_stream()
 
     def launch_stream(self):
-        cv2.namedWindow(self.stream_name)
+        # cv2.namedWindow(self.stream_name)
         cam = cv2.VideoCapture(self.stream_url)
         # gui_.launch_gui(self.truck_detected)
         if cam.isOpened():
@@ -31,20 +33,29 @@ class Master_stream_thread(threading.Thread):
 
         while rval:
             result = plate_to_text.detect(frame, self.plate_region_model, self.plate_ocr_model)
+            metadata = ''
             if result is not None:
                 # print("Truck detected \n")
                 # If a truck is detected, set event's internal flag to true -> let the supporting threads call the model
                 self.truck_detected.set()
-                self.buffer.put((result[0],self.stream_name))
+                metadata = result[1]
             else:
                 # print("No truck \n")
                 self.truck_detected.clear()
-            # cv2.imshow(self.stream_name, frame)
-            # rval, frame = cam.read()
+
+            if not self.buffer.full():
+                self.buffer.put((frame,metadata))
+            rval, frame = cam.read()
+            if self.stop_flag is True:
+                cam.release()
+                os._exit(1)
+                break
             # key = cv2.waitKey(20)
             # if key == 27:  # Press ESC to exit/close each window.
             #     break
-        cv2.destroyWindow(self.stream_name)
+        # cv2.destroyWindow(self.stream_name)
+    def stop_stream(self):
+        self.stop_flag = True
 
 # Define class for the camera thread.
 class Support_stream_thread(threading.Thread):
@@ -57,13 +68,14 @@ class Support_stream_thread(threading.Thread):
         self.model = model
         self.truck_detected = truck_arrive
         self.buffer = buffer
+        self.stop_flag = False
 
     def run(self):
         print("Starting " + self.stream_name)
         self.launch_stream()
 
     def launch_stream(self):
-        cv2.namedWindow(self.stream_name)
+        # cv2.namedWindow(self.stream_name)
         cam = cv2.VideoCapture(self.stream_url)
         if cam.isOpened():
            rval, frame = cam.read()
@@ -77,10 +89,17 @@ class Support_stream_thread(threading.Thread):
                 cv2.rectangle(frame, (0,0), (10, 20), (0, 0, 255), -1)
                 # Calling the model
                 result = code_to_text.detect(frame, self.model, None)
-                self.buffer.put((result[0], self.stream_name))
+            if not self.buffer.full():
+                self.buffer.put((frame,self.stream_name))
             # cv2.imshow(self.stream_name, frame)
-            # rval, frame = cam.read()
+            rval, frame = cam.read()
+            if self.stop_flag is True:
+                cam.release()
+                os._exit(1)
+                break
             # key = cv2.waitKey(20)
             # if key == 27:  # Press ESC to exit/close each window.
             #     break
-        cv2.destroyWindow(self.stream_name)
+        # cv2.destroyWindow(self.stream_name)
+    def stop_stream(self):
+        self.stop_flag = True

@@ -113,8 +113,9 @@ def detect(image: numpy.ndarray, code_region_model = None, plate_ocr_model = Non
         leftMax, topMax = int(df['xmax'][ind]),int(df['ymax'][ind])
         class_name = str(df['name'][ind])
         # Crop image and append to output array, add extra conditions if needed then put it through ocr
-        if "code" in class_name:
+        if True:
             code_detected_flag = True
+            print("Code region detected\n")
             plate_text = "ABCD123456"
             # Placing boundary box and text to original image
             cv2.rectangle(image, (leftMin, topMin), (leftMax, topMax), color=(255,0,0), thickness=2)
