@@ -8,7 +8,7 @@ import os
 from input_handler.get_images import load_images_from
 # sys.path.append('src\output_handler')
 from output_handler import save_image
-from plate_to_text import plate_to_text
+from detection_models import plate_to_text
 from utils_ import my_utils
 
 # Defining all types of yolo models

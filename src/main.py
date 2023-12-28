@@ -8,8 +8,9 @@ import os
 from input_handler.get_images import load_images_from
 # sys.path.append('src\output_handler')
 from output_handler import save_image
-from plate_to_text import plate_to_text
+from detection_models import plate_to_text
 from utils_ import my_utils
+# from my_gui import gui_
 
 # Defining all types of yolo models
 PLATE_REGION = 0
@@ -78,6 +79,7 @@ class Master_stream_thread(threading.Thread):
         self.models = models
         self.truck_detected = truck_detected
 
+
     def run(self):
         print("Starting " + self.stream_name)
         self.launch_stream()
@@ -85,6 +87,7 @@ class Master_stream_thread(threading.Thread):
     def launch_stream(self):
         cv2.namedWindow(self.stream_name)
         cam = cv2.VideoCapture(self.stream_url)
+        # gui_.launch_gui(self.truck_detected)
         if cam.isOpened():
             rval, frame = cam.read()
         else:

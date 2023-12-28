@@ -72,7 +72,8 @@ class App(customtkinter.CTk):
         self.bot_left_frame.columnconfigure((0,1), weight=1)
 
         # Add logo
-        logo_img = customtkinter.CTkImage(dark_image=Image.open(r"D:\Download\z5011201651262_2ff0d0dc64e458ab3aef9519d54df2e2-transformed-removebg-preview.png"), size=(int(float(screensize[0])/5.49),int(float(screensize[1])/7.45)))
+        # logo_img = customtkinter.CTkImage(dark_image=Image.open(r"D:\Download\z5011201651262_2ff0d0dc64e458ab3aef9519d54df2e2-transformed-removebg-preview.png"), size=(int(float(screensize[0])/5.49),int(float(screensize[1])/7.45)))
+        logo_img = customtkinter.CTkImage(dark_image=Image.open(r"src\my_gui\logo-02.png"), size=(int(float(screensize[0])/5.49),int(float(screensize[1])/7.45)))
         self.logo = customtkinter.CTkLabel(self.left_frame, image=logo_img, text='')
         self.logo.grid(row=3, column=0, columnspan=1, pady=5, padx=5, sticky="sew")
 
