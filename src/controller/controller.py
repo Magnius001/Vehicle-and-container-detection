@@ -54,7 +54,7 @@ class Controller():
         # Init GUI
         self.app = gui_.App()
         # self.app.bind('<KeyPress>', self.close_gui())
-        self.app.after(200, self.update_gui)
+        self.app.after(50, self.update_gui)
         self.app.mainloop()
         print("Stopping threads...\n")
         self.front_cam.stop_stream()
@@ -85,7 +85,7 @@ class Controller():
         else:
             self.app.update_plate(results[0][1])
             
-        self.app.after(1000, self.update_gui)
+        self.app.after(50, self.update_gui)
 
     def close_gui(self):
         self.app.destroy()
