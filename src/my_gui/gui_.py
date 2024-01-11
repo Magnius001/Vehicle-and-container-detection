@@ -52,7 +52,7 @@ class App(customtkinter.CTk):
         self.status_label = customtkinter.CTkLabel(self.top_left_frame, text='STATUS', width=70, height=10, bg_color= '#7289da', corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"))
         self.status_label.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.status_display = customtkinter.CTkLabel(self.top_left_frame, text='TRUCK DETECTED', width=230, height=10, bg_color='#58e91d', corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"), text_color='black')
+        self.status_display = customtkinter.CTkLabel(self.top_left_frame, text='EMPTY', width=230, height=10, bg_color='#ffffff', corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"), text_color='black')
         self.status_display.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
         self.plate_label = customtkinter.CTkLabel(self.top_left_frame, text='PLATE', width=70, height=10, bg_color= '#7289da', corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"))
@@ -142,8 +142,12 @@ class App(customtkinter.CTk):
             imtk = customtkinter.CTkImage(dark_image=im, size=(self.camera_width, self.camera_height-5))
             camera[1].configure(image = imtk)
             camera[1].image = imtk
-    def update_status(self, new_status: str, new_color: str):
-        self.status_display.configure(text=new_status, bg_color=new_color)
+    def update_status(self, is_truck_detected: bool):
+        if is_truck_detected:
+            self.status_display.configure(text='TRUCK DETECTED', bg_color='#58e91d')
+        else:
+            self.status_display.configure(text='EMPTY', bg_color='#ffffff')
+            
 
     def update_plate(self, new_plate: str):
         self.plate_display.configure(text=new_plate)

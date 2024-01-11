@@ -33,6 +33,7 @@ class Controller():
 
         # Creat event flag for when a truck is present in the lane
         self.truck_detected = threading.Event()
+        # Create single element queue for each cameras
         self.front_cam_buffer = queue.Queue(maxsize=1)
         self.back_cam_buffer = queue.Queue(maxsize=1)
         self.con1_cam_buffer = queue.Queue(maxsize=1)
@@ -52,6 +53,7 @@ class Controller():
 
         # Init GUI
         self.app = gui_.App()
+        # self.app.bind('<KeyPress>', self.close_gui())
         self.app.after(200, self.update_gui)
         self.app.mainloop()
         print("Stopping threads...\n")
@@ -62,24 +64,21 @@ class Controller():
 
     def update_gui(self):
         results = []
-        print("Flushing...\n")
+        print("Updating...\n")
         if self.front_cam_buffer.qsize != 0:
             results.append(self.front_cam_buffer.get())
-        if not self.back_cam_buffer.empty():
+        if self.back_cam_buffer.qsize != 0:
             results.append(self.back_cam_buffer.get())
-        if not self.con1_cam_buffer.empty():
+        if self.con1_cam_buffer.qsize != 0:
             results.append(self.con1_cam_buffer.get())
-        if not self.con2_cam_buffer.empty():
+        if self.con2_cam_buffer.qsize != 0:
             results.append(self.con2_cam_buffer.get())
         frames = []
         for result in results:
             frames.append(result[0]) 
         self.app.update_camera_display(frames)
 
-        if self.truck_detected.is_set():
-            self.app.update_status('TRUCK DETECTED', '#58e91d')
-        else:
-            self.app.update_status('EMPTY', 'white')
+        self.app.update_status(self.truck_detected.is_set())
 
         if results[0][1] is None:
             self.app.update_plate("")
@@ -87,3 +86,6 @@ class Controller():
             self.app.update_plate(results[0][1])
             
         self.app.after(1000, self.update_gui)
+
+    def close_gui(self):
+        self.app.destroy()

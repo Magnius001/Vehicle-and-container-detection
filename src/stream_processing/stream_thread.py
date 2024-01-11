@@ -89,6 +89,8 @@ class Support_stream_thread(threading.Thread):
                 cv2.rectangle(frame, (0,0), (10, 20), (0, 0, 255), -1)
                 # Calling the model
                 result = code_to_text.detect(frame, self.model, None)
+                if result is not None:
+                    frame = result
             if not self.buffer.full():
                 self.buffer.put((frame,self.stream_name))
             # cv2.imshow(self.stream_name, frame)
