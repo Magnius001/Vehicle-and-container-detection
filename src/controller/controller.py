@@ -1,15 +1,7 @@
 from collections import namedtuple
 import queue
-import sys
 import threading
-import cv2
-import datetime
-import pathlib
-import os
-# sys.path.append('src\input_handler')
 from input_handler.get_images import load_images_from
-# sys.path.append('src\output_handler')
-from detection_models import plate_to_text
 from utils_ import my_utils
 from stream_processing import stream_thread
 from my_gui import gui_
@@ -19,6 +11,7 @@ PLATE_REGION = 0
 PLATE_OCR = 1
 CONTAINER_1_CODE = 2
 CONTAINER_2_CODE = 3
+# Defining gui refresh rate
 UPDATE_INTERVAL = 150 #ms
 
 # Responsible for controlling the threads, GUI, transfering data from streams to GUI, storing models
