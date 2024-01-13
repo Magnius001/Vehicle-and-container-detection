@@ -3,6 +3,7 @@ import os
 import queue
 import threading
 import cv2
+import time
 
 from detection_models import plate_to_text, code_to_text
 
@@ -23,9 +24,7 @@ class Master_stream_thread(threading.Thread):
         self.launch_stream()
 
     def launch_stream(self):
-        # cv2.namedWindow(self.stream_name)
         cam = cv2.VideoCapture(self.stream_url)
-        # gui_.launch_gui(self.truck_detected)
         if cam.isOpened():
             rval, frame = cam.read()
         else:
@@ -35,25 +34,24 @@ class Master_stream_thread(threading.Thread):
             result = plate_to_text.detect(frame, self.plate_region_model, self.plate_ocr_model)
             metadata = ''
             if result is not None:
-                # print("Truck detected \n")
                 # If a truck is detected, set event's internal flag to true -> let the supporting threads call the model
                 self.truck_detected.set()
                 metadata = result[1]
             else:
-                # print("No truck \n")
                 self.truck_detected.clear()
 
-            if not self.buffer.full():
-                self.buffer.put((frame,metadata))
+            # if not self.buffer.full():
+            #     self.buffer.put((frame,metadata))
+            try:
+                self.buffer.put((frame,metadata), block=False)
+            except:
+                pass
+            time.sleep(0.1)
             rval, frame = cam.read()
             if self.stop_flag is True:
                 cam.release()
                 os._exit(1)
-                break
-            # key = cv2.waitKey(20)
-            # if key == 27:  # Press ESC to exit/close each window.
-            #     break
-        # cv2.destroyWindow(self.stream_name)
+
     def stop_stream(self):
         self.stop_flag = True
 
@@ -91,17 +89,17 @@ class Support_stream_thread(threading.Thread):
                 result = code_to_text.detect(frame, self.model)
                 if result is not None:
                     frame = result[0]
-            if not self.buffer.full():
-                self.buffer.put((frame,self.stream_name))
-            # cv2.imshow(self.stream_name, frame)
+            # if not self.buffer.full():
+            #     self.buffer.put((frame,self.stream_name))
+            try:
+                self.buffer.put((frame,self.stream_name), block=False)
+            except:
+                pass
+            time.sleep(0.1)
             rval, frame = cam.read()
             if self.stop_flag is True:
                 cam.release()
                 os._exit(1)
-                break
-            # key = cv2.waitKey(20)
-            # if key == 27:  # Press ESC to exit/close each window.
-            #     break
-        # cv2.destroyWindow(self.stream_name)
+
     def stop_stream(self):
         self.stop_flag = True
