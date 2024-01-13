@@ -5,7 +5,8 @@ import threading
 import cv2
 import time
 
-from detection_models import plate_to_text, code_to_text
+from detection_models import plate_to_text
+from detection_models import code_region
 
 class Master_stream_thread(threading.Thread):
 
@@ -86,7 +87,7 @@ class Support_stream_thread(threading.Thread):
                 # Visual indicator of truck detected
                 cv2.rectangle(frame, (0,0), (10, 20), (0, 0, 255), -1)
                 # Calling the model
-                result = code_to_text.detect(frame, self.model)
+                result = code_region.detect(frame, self.model)
                 if result is not None:
                     frame = result[0]
             # if not self.buffer.full():
