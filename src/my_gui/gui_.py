@@ -39,7 +39,7 @@ class App(customtkinter.CTk):
         # Create top banner
         self.top_frame = customtkinter.CTkFrame(self, height=40, fg_color=BACK_GROUND_COLOR, corner_radius=4)
         self.top_frame.grid(row=0, column=0, columnspan=2, rowspan=1, pady=5, padx=5, sticky="new")
-        self.top_label = customtkinter.CTkLabel(self.top_frame, text='REAL TIME VEHICLE AND CONTAINER DETECTION SYSTEM', font=customtkinter.CTkFont(size=20, weight="bold"), text_color='white')
+        self.top_label = customtkinter.CTkLabel(self.top_frame, text='REAL-TIME VEHICLE AND CONTAINER DETECTION SYSTEM', font=customtkinter.CTkFont(size=20, weight="bold"), text_color='white')
         self.top_label.pack()
 
         # Create left status frame
