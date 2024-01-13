@@ -97,8 +97,8 @@ def _apply_ocr(cropped_image: numpy.ndarray, model) -> str:
     return None
 
 # Return a list of image with a string represent the text if able to detect
-def detect(image: numpy.ndarray, code_region_model = None, plate_ocr_model = None) -> tuple:
-    if plate_ocr_model is None or code_region_model is None or image is None:
+def detect(image: numpy.ndarray, code_region_model = None) -> tuple:
+    if code_region_model is None or image is None:
         return None
     code_detected_flag = False
     frame = image.copy()

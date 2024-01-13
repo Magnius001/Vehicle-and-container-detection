@@ -88,7 +88,7 @@ class Support_stream_thread(threading.Thread):
                 # Visual indicator of truck detected
                 cv2.rectangle(frame, (0,0), (10, 20), (0, 0, 255), -1)
                 # Calling the model
-                result = code_to_text.detect(frame, self.model, None)
+                result = code_to_text.detect(frame, self.model)
                 if result is not None:
                     frame = result
             if not self.buffer.full():
