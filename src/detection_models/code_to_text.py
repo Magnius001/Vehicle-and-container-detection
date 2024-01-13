@@ -115,7 +115,7 @@ def detect(image: numpy.ndarray, code_region_model = None) -> tuple:
         # Crop image and append to output array, add extra conditions if needed then put it through ocr
         if True:
             code_detected_flag = True
-            print("Code region detected\n")
+            # print("Code region detected\n")
             plate_text = "ABCD123456"
             # Placing boundary box and text to original image
             cv2.rectangle(image, (leftMin, topMin), (leftMax, topMax), color=(255,0,0), thickness=2)

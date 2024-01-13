@@ -90,7 +90,7 @@ class Support_stream_thread(threading.Thread):
                 # Calling the model
                 result = code_to_text.detect(frame, self.model)
                 if result is not None:
-                    frame = result
+                    frame = result[0]
             if not self.buffer.full():
                 self.buffer.put((frame,self.stream_name))
             # cv2.imshow(self.stream_name, frame)

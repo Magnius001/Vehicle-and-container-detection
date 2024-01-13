@@ -9,10 +9,15 @@ from PIL import Image, ImageTk
 import ctypes
 user32 = ctypes.windll.user32
 screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-
 # Setup customtkinter theme
 customtkinter.set_appearance_mode("Dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
+
+# Define colors
+BACK_GROUND_COLOR = '#2c2f33'
+ACCENT_COLOR = '#7289da'
+GREEN_STATUS_COLOR = '#58e91d'
+WHITE_COLOR = '#ffffff'
 
 # Main app
 class App(customtkinter.CTk):
@@ -32,54 +37,53 @@ class App(customtkinter.CTk):
 
 
         # Create top banner
-        self.top_frame = customtkinter.CTkFrame(self, height=40, fg_color='#2c2f33', corner_radius=4)
+        self.top_frame = customtkinter.CTkFrame(self, height=40, fg_color=BACK_GROUND_COLOR, corner_radius=4)
         self.top_frame.grid(row=0, column=0, columnspan=2, rowspan=1, pady=5, padx=5, sticky="new")
         self.top_label = customtkinter.CTkLabel(self.top_frame, text='REAL TIME VEHICLE AND CONTAINER DETECTION SYSTEM', font=customtkinter.CTkFont(size=20, weight="bold"), text_color='white')
         self.top_label.pack()
 
         # Create left status frame
-        self.left_frame = customtkinter.CTkFrame(self, width=450, fg_color='#2c2f33')
+        self.left_frame = customtkinter.CTkFrame(self, width=450, fg_color=BACK_GROUND_COLOR)
         self.left_frame.grid(row=1, column=0, columnspan=1, rowspan=1, pady=5, padx=5, sticky="nsew")
         # self.left_frame.rowconfigure(1, weight=1)
         self.left_frame.rowconfigure(2, weight=1)
         self.left_frame.columnconfigure(0, weight=1)
 
         # Adding to left status frame
-        self.top_left_frame = customtkinter.CTkFrame(self.left_frame, fg_color='#2c2f33')
+        self.top_left_frame = customtkinter.CTkFrame(self.left_frame, fg_color=BACK_GROUND_COLOR)
         self.top_left_frame.grid(row=0, column=0, columnspan=1, rowspan=1, pady=5, padx=5, sticky="new")
         self.top_left_frame.rowconfigure((0,1), weight=1)
         self.top_left_frame.columnconfigure(0, weight=1)
         self.top_left_frame.columnconfigure(1, weight=2)
 
-        self.status_label = customtkinter.CTkLabel(self.top_left_frame, text='STATUS', width=70, height=10, bg_color= '#7289da', corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.status_label = customtkinter.CTkLabel(self.top_left_frame, text='STATUS', width=70, height=10, bg_color= ACCENT_COLOR, corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"))
         self.status_label.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.status_display = customtkinter.CTkLabel(self.top_left_frame, text='EMPTY', width=230, height=10, bg_color='#ffffff', corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"), text_color='black')
+        self.status_display = customtkinter.CTkLabel(self.top_left_frame, text='EMPTY', width=230, height=10, bg_color=WHITE_COLOR, corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"), text_color='black')
         self.status_display.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
 
-        self.plate_label = customtkinter.CTkLabel(self.top_left_frame, text='PLATE', width=70, height=10, bg_color= '#7289da', corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.plate_label = customtkinter.CTkLabel(self.top_left_frame, text='PLATE', width=70, height=10, bg_color= ACCENT_COLOR, corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"))
         self.plate_label.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 
-        self.plate_display = customtkinter.CTkLabel(self.top_left_frame, text='15C05466', width=230, height=10, bg_color='#ffffff', corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"), text_color='black')
+        self.plate_display = customtkinter.CTkLabel(self.top_left_frame, text='15C05466', width=230, height=10, bg_color=WHITE_COLOR, corner_radius=20, font=customtkinter.CTkFont(size=20, weight="bold"), text_color='black')
         self.plate_display.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
 
         # Container details display
         self.con_details_display = customtkinter.CTkLabel(self.left_frame, text='Container 1: TRHU558756\nContainer 2: WHSU058540\nDate:  27/12/2023\nTime: 14:55:45\n', anchor='nw', justify='left', font=customtkinter.CTkFont(size=20, weight="bold"))
         self.con_details_display.grid(row=1, column=0, padx=10, sticky="nsew")
 
-        self.bot_left_frame = customtkinter.CTkFrame(self.left_frame, width=300, fg_color='#2c2f33', border_color='#7289da', border_width=2, corner_radius=0)
+        self.bot_left_frame = customtkinter.CTkFrame(self.left_frame, width=300, fg_color=BACK_GROUND_COLOR, border_color=ACCENT_COLOR, border_width=2, corner_radius=0)
         self.bot_left_frame.grid(row=2, column=0, columnspan=1, pady=5, padx=5, sticky="nsew")
         self.bot_left_frame.rowconfigure((0,1), weight=1)
         self.bot_left_frame.columnconfigure((0,1), weight=1)
 
         # Add logo
-        # logo_img = customtkinter.CTkImage(dark_image=Image.open(r"D:\Download\z5011201651262_2ff0d0dc64e458ab3aef9519d54df2e2-transformed-removebg-preview.png"), size=(int(float(screensize[0])/5.49),int(float(screensize[1])/7.45)))
         logo_img = customtkinter.CTkImage(dark_image=Image.open(r"src\my_gui\logo-02.png"), size=(int(float(screensize[0])/5.49),int(float(screensize[1])/7.45)))
         self.logo = customtkinter.CTkLabel(self.left_frame, image=logo_img, text='')
         self.logo.grid(row=3, column=0, columnspan=1, pady=5, padx=5, sticky="sew")
 
         # Creating right frame
-        self.right_frame = customtkinter.CTkFrame(self, fg_color='#2c2f33')
+        self.right_frame = customtkinter.CTkFrame(self, fg_color=BACK_GROUND_COLOR)
         self.right_frame.grid(row=1, column=1, columnspan=1, rowspan=1, pady=5, padx=5, sticky="nsew")
         self.right_frame.columnconfigure(0, weight=1)
         self.right_frame.columnconfigure(1, weight=1)
@@ -122,7 +126,7 @@ class App(customtkinter.CTk):
                 
         
     def _setup_camera_display(self, _display:list, row:int, col:int, camera_type: str):
-        _display[0].configure(width=450, fg_color='#2c2f33', border_color='#7289da', border_width=2, corner_radius=0)
+        _display[0].configure(width=450, fg_color=BACK_GROUND_COLOR, border_color=ACCENT_COLOR, border_width=2, corner_radius=0)
         _display[0].grid(row=row, column=col, pady=5, padx=5)
         _display[0].rowconfigure(0, weight=1)
         _display[0].rowconfigure(1, weight=3)
@@ -132,7 +136,7 @@ class App(customtkinter.CTk):
         _display[1].configure(width=self.camera_width, height=self.camera_height, text='', bg_color= 'transparent', anchor='s')
         _display[1].grid(row=0, column=0, padx=5, pady=5, sticky="n")
 
-        _display[2].configure(width=110, text=camera_type, text_color='#ffffff', bg_color= '#7289da', corner_radius=0, font=customtkinter.CTkFont(size=15, weight="bold"))
+        _display[2].configure(width=110, text=camera_type, text_color=WHITE_COLOR, bg_color= ACCENT_COLOR, corner_radius=0, font=customtkinter.CTkFont(size=15, weight="bold"))
         _display[2].place(relx=1, rely=1, x=0, y=1,anchor="se")
     
     def update_camera_display(self, images: list):
@@ -146,9 +150,9 @@ class App(customtkinter.CTk):
             camera[1].image = imtk
     def update_status(self, is_truck_detected: bool):
         if is_truck_detected:
-            self.status_display.configure(text='TRUCK DETECTED', bg_color='#58e91d')
+            self.status_display.configure(text='TRUCK DETECTED', bg_color=GREEN_STATUS_COLOR)
         else:
-            self.status_display.configure(text='EMPTY', bg_color='#ffffff')
+            self.status_display.configure(text='EMPTY', bg_color=WHITE_COLOR)
             
 
     def update_plate(self, new_plate: str):
