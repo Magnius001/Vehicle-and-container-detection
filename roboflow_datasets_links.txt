@@ -1,0 +1,8 @@
+Plate region:
+https://universe.roboflow.com/deeplearn-85b3j/easyscale-front-top-cw
+
+Plate text:
+https://universe.roboflow.com/duy-tan-university-sxnhs/plate-wfqjl
+
+Code region:
+https://universe.roboflow.com/object-detection/container-character-codes

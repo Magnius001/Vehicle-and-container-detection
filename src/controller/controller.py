@@ -12,7 +12,7 @@ PLATE_OCR = 1
 CONTAINER_1_CODE = 2
 CONTAINER_2_CODE = 3
 # Defining gui refresh rate
-UPDATE_INTERVAL = 150 #ms
+UPDATE_INTERVAL = 15 #ms
 
 # Responsible for controlling the threads, GUI, transfering data from streams to GUI, storing models
 class Controller():
@@ -37,7 +37,8 @@ class Controller():
 
         # Create threads to handle multiple camera streams
         self.front_cam = stream_thread.Master_stream_thread(stream_names[0], stream_urls[0], self.models[PLATE_REGION], self.models[PLATE_OCR], self.truck_detected, self.front_cam_buffer)
-        self.back_cam = stream_thread.Support_stream_thread(stream_names[1], stream_urls[1], None, self.truck_detected, self.back_cam_buffer)
+        self.back_cam = stream_thread.Master_stream_thread(stream_names[1], stream_urls[1], self.models[PLATE_REGION], self.models[PLATE_OCR], threading.Event(), self.back_cam_buffer)
+        # self.back_cam = stream_thread.Support_stream_thread(stream_names[1], stream_urls[1], None, self.truck_detected, self.back_cam_buffer)
         self.con1_cam = stream_thread.Support_stream_thread(stream_names[2], stream_urls[2], self.models[CONTAINER_1_CODE], self.truck_detected, self.con1_cam_buffer)
         self.con2_cam = stream_thread.Support_stream_thread(stream_names[3], stream_urls[3], self.models[CONTAINER_2_CODE], self.truck_detected, self.con2_cam_buffer)
 
@@ -83,7 +84,6 @@ class Controller():
             self.app.update_plate(results[0][1])
             
         self.app.after(UPDATE_INTERVAL, self.update_gui)
-
 
     def close_gui(self):
         self.app.destroy()
