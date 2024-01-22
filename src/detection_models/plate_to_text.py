@@ -1,8 +1,5 @@
 # Setup environment
-import collections
-import sys
 import numpy
-import torch
 import cv2
 import pandas
 
