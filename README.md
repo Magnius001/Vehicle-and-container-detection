@@ -1,5 +1,5 @@
 ﻿# REAL-TIME VEHICLE AND CONTAINER DETECTION SYSTEM
-## Status: Ending
+## Status: Ended
 This project take video streams and perform truck detection, plate and container's codes OCR by using Yolov5 models.
 
 In its current state, the project only serves as a proof-of-concept only, so the efficiency and error rate for object detections are questionable.
