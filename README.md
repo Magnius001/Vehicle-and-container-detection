@@ -67,7 +67,7 @@ python train.py --img 640 --batch 24 --epochs 10 --data <Folder name of the data
 You can replace the pretrained weight file to 5s/5m/5x depending on the use case. If Python has trouble finding the dataset images, I recommend to edit the data.yml file to contain absolute path.
 
 ## Further discussions
-This section is just my rant and talk about the application itself. Feel free to skip should you not want to read it.
+Discussion on different aspects of the project.
 ### Design objectives
 The original purposes of this application was to determine the container's codes only. However, throughout the design process, extra features were added, including the GUI, front and back plate detection.
 ### Modularity of the application
