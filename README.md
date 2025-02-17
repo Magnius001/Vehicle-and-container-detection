@@ -43,10 +43,10 @@ The current version of the application pull from 3 camera streams of Hai Phong P
 
 However, a alternate version can be run by changing the 4 urls in the main.py file to either other video urls or path to local video file. The 4 urls mentioned above are as follow:
 ```
-stream_urls.append(r"rtsp://admin:A@12345678@172.16.17.111:554/media/video2&172.16.17.111:80/LAPI/V1.0/Channels/1")
-stream_urls.append(r"rtsp://admin:A@12345678@172.16.17.112:554/media/video2&172.16.17.112:80/LAPI/V1.0/Channels/1")
-stream_urls.append(r"rtsp://admin:A@12345678@172.16.17.117:554/media/video2&172.16.17.117:80/LAPI/V1.0/Channels/1")
-stream_urls.append(r"rtsp://admin:A@12345678@172.16.17.117:554/media/video2&172.16.17.117:80/LAPI/V1.0/Channels/1")
+stream_urls.append(r"rtsp://xxx/Channels/1")
+stream_urls.append(r"rtsp://xxx/Channels/1")
+stream_urls.append(r"rtsp://xxx/Channels/1")
+stream_urls.append(r"rtsp://xxx/Channels/1")
 ```
 
 ### Frame rates
